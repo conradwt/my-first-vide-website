@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import BloodPressureForm from './components/BloodPressureForm';
+import BloodPressureFormDialog from './components/BloodPressureFormDialog';
 import ReadingsList from './components/ReadingsList';
 import Stats from './components/Stats';
 import { BloodPressureReading } from './types';
@@ -10,6 +10,7 @@ import { getReadingsFromStorage, deleteReadingFromStorage } from './utils/storag
 export default function Home() {
   const [readings, setReadings] = useState<BloodPressureReading[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     // Load readings from localStorage on component mount
@@ -51,17 +52,19 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Form */}
-          <div className="lg:col-span-1">
-            <BloodPressureForm onReadingAdded={handleReadingAdded} />
-          </div>
+        {/* Add Reading Button */}
+        <div className="mb-8">
+          <button
+            onClick={() => setDialogOpen(true)}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 text-lg"
+          >
+            + Add Reading
+          </button>
+        </div>
 
-          {/* Stats */}
-          <div className="lg:col-span-2">
-            <Stats readings={readings} />
-          </div>
+        {/* Stats */}
+        <div className="mb-8">
+          <Stats readings={readings} />
         </div>
 
         {/* Readings List */}
@@ -72,13 +75,20 @@ export default function Home() {
         {/* Footer */}
         <footer className="mt-12 text-center text-gray-600">
           <p className="text-sm">
-            💡 Tip: Your data is stored locally in your browser and won't be shared with anyone.
+            💡 Tip: Your data is stored locally in your browser and won&apos;t be shared with anyone.
           </p>
           <p className="text-xs text-gray-500 mt-2">
             This app is for tracking purposes only and not a substitute for medical advice.
           </p>
         </footer>
       </div>
+
+      {/* Dialog */}
+      <BloodPressureFormDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onReadingAdded={handleReadingAdded}
+      />
     </main>
   );
 }
